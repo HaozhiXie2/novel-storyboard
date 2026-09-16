@@ -1,0 +1,9 @@
+.DS_Store
+.env
+.env.*
+output/**/*.png
+output/**/*.jpg
+output/**/*.mp4
+output/**/*.webm
+.tools/
+media-tasks/
