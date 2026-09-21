@@ -49,3 +49,14 @@
 ```
 
 生成文件写入 `media-tasks/<slug>/shot-01/` 等目录，任务和状态写入 `manifest.json`。脚本只使用项目已有分镜提示词，不联网搜索或补写剧情；配音、字幕、音效及最终 MP4 合成仍需单独接入 TTS 和 FFmpeg。
+
+## 本地 Stable Diffusion / AnimateDiff
+
+本地后端不依赖 Dreamina 排队，但需要先启动 ComfyUI API（默认 `http://127.0.0.1:8188`），并安装 Stable Diffusion checkpoint、AnimateDiff motion module 和视频合成节点。
+
+```powershell
+.\scripts\check-local-backend.ps1
+.\scripts\run-local-comfyui-pipeline.ps1 -Slug chibi-zhengshi
+```
+
+脚本会解析现有 `04-prompts.md` 并生成本地镜头清单。由于不同 ComfyUI 工作流的节点名称和模型文件不同，`workflows/animatediff-api.example.json` 只是占位模板；导出你本机的 API workflow 后，再把它作为 `-WorkflowPath` 传入。

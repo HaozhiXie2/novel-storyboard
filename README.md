@@ -99,6 +99,17 @@ rights/                 本项目用途说明
 
 长章节的自动生成入口是 `scripts/run-dreamina-pipeline.ps1`：它读取已有的 `04-prompts.md`，按镜头顺序串行调用 Dreamina，并把结果下载到 `media-tasks/`，不会创建额外的排队网页。
 
+## 本地生成后端
+
+项目支持把 Dreamina 替换为本地 `Stable Diffusion + AnimateDiff + ComfyUI`。本地后端适合生成角色定妆图、关键帧和短动画片段；Dreamina 仍可作为备用后端。
+
+- 检查 ComfyUI：`scripts/check-local-backend.ps1`
+- 准备本地镜头清单：`scripts/run-local-comfyui-pipeline.ps1 -Slug <slug>`
+- 配置示例：`config/local-backend.example.json`
+- 工作流占位：`workflows/animatediff-api.example.json`
+
+本地生成不需要排队或额度，但需要自行安装 ComfyUI、Stable Diffusion 模型、AnimateDiff motion module 和 FFmpeg。示例工作流是占位说明，必须替换为从本机 ComfyUI 导出的真实 API workflow 后才能生成视频。
+
 ## 后续改进方向
 
 当前版本重点完成“小说文本 → 分镜稿 → Dreamina 视频片段”的工作流。后续计划逐步完善为完整的 AI 短剧生产流水线：

@@ -1,0 +1,13 @@
+{
+  "backend": "comfyui-animatediff",
+  "server": "http://127.0.0.1:8188",
+  "workflow": "workflows/animatediff-api.example.json",
+  "ratio": "9:16",
+  "width": 576,
+  "height": 1024,
+  "frames": 16,
+  "fps": 8,
+  "steps": 16,
+  "seed": -1,
+  "notes": "示例配置；请先安装 ComfyUI、AnimateDiff 节点和对应模型。"
+}

@@ -1,0 +1,10 @@
+{
+  "说明": "这是 ComfyUI API 工作流占位模板。导出真实 API 工作流后，将本文件替换为实际 workflow JSON。",
+  "使用要求": [
+    "CheckpointLoaderSimple：Stable Diffusion 1.5 或兼容模型",
+    "AnimateDiffLoader：AnimateDiff motion module",
+    "KSampler：正向提示词和负向提示词",
+    "VHS_VideoCombine：输出 MP4 或 GIF",
+    "将脚本中的 prompt 节点和文件名节点映射到你的工作流"
+  ]
+}
