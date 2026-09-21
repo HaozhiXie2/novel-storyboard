@@ -7,3 +7,4 @@ output/**/*.mp4
 output/**/*.webm
 .tools/
 media-tasks/
+.local/
