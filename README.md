@@ -1,8 +1,24 @@
-# 小说分镜 Agent
+# 小说分镜与本地视频工作台
+
+## 本机直接使用
+
+### 推荐入口：即梦影像工作台
+
+双击 **Start-Film.cmd**（也兼容 **Start-Images.cmd**），打开 **http://127.0.0.1:7861**。可以输入画面描述生成图片，再选图、填写动作描述生成 5/10 秒短视频，并在同一页面预览和下载。
+
+新版提供图片/视频作品库、真实任务状态、提交防重复与重启恢复查询。使用已登录的即梦账号和现有积分，不需要本机运行大型生图/视频模型；云端仍可能排队。完整用法与限制见 [IMAGE_GUIDE.md](IMAGE_GUIDE.md)。**当前是单镜头创作闭环，不代表已实现长章节一键生成整部短剧。**
+
+上述一键启动适用于已部署环境的电脑。GitHub 仓库只包含代码和说明，不包含 Python 运行环境、即梦 CLI、登录凭据或生成素材；换电脑需要重新配置 `.local/venv`、`.tools/dreamina.exe` 和即梦登录，可选安装 FFmpeg 以生成兼容预览。
+
+### 保留入口：本地模型与分镜工作流
+
+已部署的电脑双击 **Start-Studio.cmd**，打开中文页面后粘贴正文即可制作。支持本地分镜、Wan / AnimateDiff 短动画与 MP4 合成，当前本地成片不配音。默认先审核分镜，也可以勾选自动连续生成。完整说明和当前限制见 [LOCAL_GUIDE.md](LOCAL_GUIDE.md)。
+
+本地运行环境和模型不会上传到 GitHub，因此下载仓库不等于已安装模型。下面保留原有 Agent 工作流的说明。
 
 把你有权使用的小说章节，改编成剧情总结、分镜指导和生图/生视频提示词。
 
-这不是独立网站，也不是爬虫。打开本文件夹，在 Cursor 里把任务交给 **novel-director**。模型用你的 Cursor 订阅，产出写在 `output/`。
+项目包含本地中文操作页面，也保留在编辑器中把任务交给 **novel-director** 的用法。Agent 方式的产出写在 `output/`，本地页面产出写在 `media-tasks/studio/`。
 
 ## 为什么做
 
@@ -82,7 +98,7 @@
 ## 边界（v1）
 
 - **做：** 解析你提供的文本 → 总结 → 分镜 → 提示词
-- **不做：** 爬番茄小说或任何网站；不调用外部生图/生视频 API（等你有 Key 再加）
+- **不做：** 爬番茄小说或任何小说网站；本地页面不调用付费媒体 API，Dreamina 脚本是单独的可选入口
 - **素材：** 只处理你自己提供、且有权改编的文本
 
 ## 项目结构
@@ -104,11 +120,11 @@ rights/                 本项目用途说明
 项目支持把 Dreamina 替换为本地 `Stable Diffusion + AnimateDiff + ComfyUI`。本地后端适合生成角色定妆图、关键帧和短动画片段；Dreamina 仍可作为备用后端。
 
 - 检查 ComfyUI：`scripts/check-local-backend.ps1`
-- 准备本地镜头清单：`scripts/run-local-comfyui-pipeline.ps1 -Slug <slug>`
+- 提交本地正文：`scripts/run-local-comfyui-pipeline.ps1 -TextFile <正文路径> -Duration 10 -Automatic`
 - 配置示例：`config/local-backend.example.json`
-- 工作流占位：`workflows/animatediff-api.example.json`
+- 真实 API 工作流示例：`workflows/animatediff-api.example.json`
 
-本地生成不需要排队或额度，但需要自行安装 ComfyUI、Stable Diffusion 模型、AnimateDiff motion module 和 FFmpeg。示例工作流是占位说明，必须替换为从本机 ComfyUI 导出的真实 API workflow 后才能生成视频。
+本地页面已经实现真实 ComfyUI 请求、镜头结果下载、中文旁白和 FFmpeg 合成。当前安装使用项目内独立环境；启动页面后即可使用，不需要手工映射工作流。模型下载和安装记录见本地使用说明。以下路线图中仍有部分高级能力尚未实现。
 
 ## 后续改进方向
 

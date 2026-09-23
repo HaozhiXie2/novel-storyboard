@@ -1,10 +1,10 @@
 {
-  "说明": "这是 ComfyUI API 工作流占位模板。导出真实 API 工作流后，将本文件替换为实际 workflow JSON。",
-  "使用要求": [
-    "CheckpointLoaderSimple：Stable Diffusion 1.5 或兼容模型",
-    "AnimateDiffLoader：AnimateDiff motion module",
-    "KSampler：正向提示词和负向提示词",
-    "VHS_VideoCombine：输出 MP4 或 GIF",
-    "将脚本中的 prompt 节点和文件名节点映射到你的工作流"
-  ]
+  "1": {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": "v1-5-pruned-emaonly.safetensors"}},
+  "2": {"class_type": "CLIPTextEncode", "inputs": {"clip": ["1", 1], "text": "Two ancient Chinese scholars sailing on a wooden boat, river, cinematic illustration"}},
+  "3": {"class_type": "CLIPTextEncode", "inputs": {"clip": ["1", 1], "text": "text, watermark, blurry, deformed"}},
+  "4": {"class_type": "EmptyLatentImage", "inputs": {"width": 432, "height": 768, "batch_size": 16}},
+  "5": {"class_type": "ADE_AnimateDiffLoaderGen1", "inputs": {"model": ["1", 0], "model_name": "mm_sd_v15_v2.ckpt", "beta_schedule": "autoselect"}},
+  "6": {"class_type": "KSampler", "inputs": {"model": ["5", 0], "positive": ["2", 0], "negative": ["3", 0], "latent_image": ["4", 0], "seed": 20260922, "steps": 16, "cfg": 7.0, "sampler_name": "euler", "scheduler": "normal", "denoise": 1.0}},
+  "7": {"class_type": "VAEDecodeTiled", "inputs": {"samples": ["6", 0], "vae": ["1", 2], "tile_size": 256, "overlap": 64, "temporal_size": 16, "temporal_overlap": 4}},
+  "8": {"class_type": "SaveImage", "inputs": {"images": ["7", 0], "filename_prefix": "novel-studio/example"}}
 }

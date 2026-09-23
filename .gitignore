@@ -8,3 +8,9 @@ output/**/*.webm
 .tools/
 media-tasks/
 .local/
+
+# Machine-local Python caches and runtime logs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.log

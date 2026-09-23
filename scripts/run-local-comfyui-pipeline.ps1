@@ -1,40 +1,19 @@
 param(
-    [Parameter(Mandatory = $true)] [string]$Slug,
-    [string]$ComfyUrl = 'http://127.0.0.1:8188',
-    [string]$WorkflowPath,
-    [int]$PollSeconds = 2,
-    [int]$TimeoutSeconds = 1800
+    [string]$Slug,
+    [string]$TextFile,
+    [ValidateSet(10,30,60,90)][int]$Duration = 30,
+    [switch]$Automatic
 )
-
-$projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-$outputDir = Join-Path $projectRoot "output\$Slug"
-$mediaDir = Join-Path $projectRoot "media-tasks\local-$Slug"
-$promptFile = Join-Path $outputDir '04-prompts.md'
-if (-not (Test-Path -LiteralPath $promptFile)) { throw "找不到 $promptFile" }
-if (-not $WorkflowPath) { $WorkflowPath = Join-Path $projectRoot 'workflows\animatediff-api.example.json' }
-if (-not (Test-Path -LiteralPath $WorkflowPath)) { throw "找不到工作流：$WorkflowPath" }
-
-& "$PSScriptRoot\check-local-backend.ps1" -ComfyUrl $ComfyUrl
-$promptText = Get-Content -LiteralPath $promptFile -Raw
-$matches = [regex]::Matches($promptText, '(?ms)^##\s+镜\s+([^\r\n]+).*?^\*\*生视频：\*\*\s*([^\r\n]+)')
-if ($matches.Count -eq 0) { throw '没有找到生视频提示词。' }
-
-New-Item -ItemType Directory -Force -Path $mediaDir | Out-Null
-$manifest = [System.Collections.Generic.List[object]]::new()
-for ($i = 0; $i -lt $matches.Count; $i++) {
-    $shotDir = Join-Path $mediaDir ("shot-{0:D2}" -f ($i + 1))
-    New-Item -ItemType Directory -Force -Path $shotDir | Out-Null
-    $manifest.Add([pscustomobject]@{
-        shot = $i + 1
-        name = $matches[$i].Groups[1].Value.Trim()
-        prompt = $matches[$i].Groups[2].Value.Trim()
-        status = 'ready-for-workflow-mapping'
-        output_dir = $shotDir
-    })
+$ErrorActionPreference = 'Stop'
+$projectRoot = Split-Path -Parent $PSScriptRoot
+if (-not $TextFile) {
+    if (-not $Slug -or $Slug -match '[/\\]|\.\.') { throw 'Provide -TextFile or a simple -Slug matching source/<slug>.md.' }
+    $TextFile = Join-Path $projectRoot "source\$Slug.md"
 }
-
-$manifestPath = Join-Path $mediaDir 'manifest.json'
-$manifest | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
-Write-Host "已解析 $($matches.Count) 个镜头。" -ForegroundColor Green
-Write-Host "注意：请先把 ComfyUI 导出的真实 API workflow JSON 放入 $WorkflowPath，再将 prompt 节点映射到该工作流。" -ForegroundColor Yellow
-Write-Host "任务清单：$manifestPath"
+if (-not (Test-Path -LiteralPath $TextFile)) { throw "Source file not found: $TextFile" }
+$TextFile = (Resolve-Path -LiteralPath $TextFile).Path
+& "$PSScriptRoot\start-studio.ps1" -NoBrowser
+$cliArgs = @((Join-Path $projectRoot 'app\cli.py'), $TextFile, '--duration', "$Duration")
+if ($Automatic) { $cliArgs += '--automatic' }
+& (Join-Path $projectRoot '.local\venv\Scripts\python.exe') @cliArgs
+if ($LASTEXITCODE -ne 0) { throw 'Submission failed. See output above.' }
