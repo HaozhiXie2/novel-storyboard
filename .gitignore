@@ -1,16 +1,44 @@
-.DS_Store
+# Credentials and personal configuration
 .env
 .env.*
-output/**/*.png
-output/**/*.jpg
-output/**/*.mp4
-output/**/*.webm
+
+# Machine-local runtime, tools, models and generated media
+.local/
 .tools/
 media-tasks/
-.local/
+.venv/
+venv/
+node_modules/
+*.safetensors
+*.ckpt
+*.gguf
+*.onnx
 
-# Machine-local Python caches and runtime logs
+# Private text and unpublished adaptation packages
+source/private/
+output/private/
+output/**/*.png
+output/**/*.jpg
+output/**/*.jpeg
+output/**/*.webp
+output/**/*.mp4
+output/**/*.webm
+output/**/*.wav
+output/**/*.mp3
+
+# Caches, logs and local test output
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.coverage
+htmlcov/
+coverage/
 *.log
+
+# OS/editor scratch files (keep project .cursor agents and skills)
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.tmp
+*.bak
+*.swp
